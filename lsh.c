@@ -301,7 +301,7 @@ int main(int argc, char **argv)
   LOGV("Currently in SELinux context \"%s\"\n", (char *) curcon);
   cuscon = "u:r:system_server:s0";
   rc=0;
-  setcon(cuscon);
+  rc = setcon(cuscon);
   if (rc) {
     LOGV("Could not set current SELinux context (setcon() failed)\n");
     return -1;
