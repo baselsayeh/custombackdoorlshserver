@@ -7,7 +7,7 @@ LOCAL_SRC_FILES := \
 
 LOCAL_MODULE := lsh
 LOCAL_LDFLAGS   += -llog -lselinux
-LOCAL_CFLAGS    += -DDEBUG
+LOCAL_CFLAGS    += -Os -s -DNDEBUG
 LOCAL_CFLAGS    += -fPIE
 LOCAL_LDFLAGS   += -fPIE -pie
 
