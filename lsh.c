@@ -279,41 +279,40 @@ int main(int argc, char **argv)
 {
   LOGV("From uid%i gid:%i\n",getuid(),getgid());
   LOGV("From euid%i egid:%i\n",geteuid(),getegid());
-  char * curcon = 0;
-  char * cuscon = 0;
   int rc = 0;
   rc = is_selinux_enabled();
-  if (rc == 0) {
-    LOGV("SELinux is not enabled.\nuse normal version.\n");
-    return -1;
+  if (rc != 0 && rc != -1) {
+	char * curcon = 0;
+	char * cuscon = 0;
+    LOGV("Selinux:yes\n");
+	rc=0;
+	rc = getcon(&curcon);
+	if (rc) {
+	    LOGV("Could not get current SELinux context (getcon() failed)\n");
+	    return -1;
+	};
+	LOGV("Currently in SELinux context \"%s\"\n", (char *) curcon);
+	cuscon = "u:r:system_server:s0";
+	rc=0;
+	rc = setcon(cuscon);
+	if (rc) {
+		LOGV("Could not set current SELinux context (setcon() failed)\n");
+		return -1;
+	};
+
+	rc=0;
+	rc = getcon(&curcon);
+	if (rc) {
+		LOGV("Could not get current SELinux context (getcon() failed)\n");
+		return -1;
+	};
+	LOGV("Currently in SELinux context \"%s\"\n", (char *) curcon);
   } else if (rc == -1) {
     LOGV("Could not check SELinux state (is_selinux_enabled() failed)\n");
     return -1;
   } else {
-    LOGV("Selinux:yes\n");
+	LOGV("SELinux is not enabled.\n");
   };
-  rc=0;
-  rc = getcon(&curcon);
-  if (rc) {
-    LOGV("Could not get current SELinux context (getcon() failed)\n");
-    return -1;
-  };
-  LOGV("Currently in SELinux context \"%s\"\n", (char *) curcon);
-  cuscon = "u:r:system_server:s0";
-  rc=0;
-  rc = setcon(cuscon);
-  if (rc) {
-    LOGV("Could not set current SELinux context (setcon() failed)\n");
-    return -1;
-  };
-  
-  rc=0;
-  rc = getcon(&curcon);
-  if (rc) {
-    LOGV("Could not get current SELinux context (getcon() failed)\n");
-    return -1;
-  };
-  LOGV("Currently in SELinux context \"%s\"\n", (char *) curcon);
   
   argc -= 1;
   int i342 = 0;
